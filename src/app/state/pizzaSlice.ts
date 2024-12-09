@@ -4,16 +4,20 @@ import {axiosApi} from "../axiosApi";
 
 export interface PizzaState {
     dishes: Dishes[];
+    dish: Dishes;
     isLoading: boolean;
     isError: boolean;
-    isSuccess: boolean;
+    isEditing: boolean;
+    isDeleting: boolean;
 }
 
 const initialState: PizzaState = {
     dishes: [],
+    dish: {title: '', price: '', image: '', id: ''},
     isLoading: false,
     isError: false,
-    isSuccess: false,
+    isEditing: false,
+    isDeleting: false,
 }
 
 export const newDish = createAsyncThunk<void, Dish>('pizza/creating', async (dish) => {
@@ -41,40 +45,73 @@ export const fetchDishes = createAsyncThunk<Dishes[], void>('pizza/fetching', as
     }
 });
 
+export const editDish = createAsyncThunk<void, Dishes>('pizza/editing', async (id) => {
+    try {
+        await axiosApi.put(`pizza/dishes/${id.id}.json`, {title: id.title, price: id.price, image: id.image});
+    } catch (e) {
+        console.error(e);
+    }
+});
+
+export const deleteDish = createAsyncThunk<void, string>('pizza/deleting', async (id) => {
+    await axiosApi.delete(`pizza/dishes/${id}.json`);
+});
+
 export const pizzaSlice = createSlice({
     name: "pizza",
     initialState,
-    reducers: {},
+    reducers: {
+        getDish: (state, action) => {
+            state.dish = action.payload;
+        }
+    },
     extraReducers: (builder) => {
         builder.addCase(newDish.pending, (state) => {
             state.isLoading = true;
             state.isError = false;
-            state.isSuccess = false
         }).addCase(newDish.fulfilled, (state) => {
             state.isLoading = false;
             state.isError = false;
-            state.isSuccess = true;
         }).addCase(newDish.rejected, (state) => {
             state.isLoading = false;
             state.isError = true;
-            state.isSuccess = false;
         }).addCase(fetchDishes.pending, (state) => {
             state.isLoading = true;
             state.isError = false;
-            state.isSuccess = false;
         }).addCase(fetchDishes.fulfilled, (state, action) => {
             state.dishes = action.payload;
-            console.log(action.payload);
             state.isLoading = false;
-            state.isSuccess = true;
             state.isError = false;
         }).addCase(fetchDishes.rejected, (state) => {
             state.isLoading = false;
             state.isError = true;
-            state.isSuccess = false;
+        }).addCase(editDish.pending, (state) => {
+            state.isLoading = true;
+            state.isError = false;
+            state.isEditing = true;
+        }).addCase(editDish.fulfilled, (state) => {
+            state.isLoading = false;
+            state.isEditing = false;
+            state.isError = false;
+        }).addCase(editDish.rejected, (state) => {
+            state.isLoading = false;
+            state.isError = true;
+            state.isEditing = false;
+        }).addCase(deleteDish.pending, (state) => {
+            state.isLoading = true;
+            state.isError = false;
+            state.isDeleting = true;
+        }).addCase(deleteDish.fulfilled, (state) => {
+            state.isLoading = false;
+            state.isError = false;
+            state.isDeleting = false;
+        }).addCase(deleteDish.rejected, (state) => {
+            state.isLoading = false;
+            state.isError = false;
+            state.isDeleting = false;
         })
     }
 })
 
 export const pizzaReducer = pizzaSlice.reducer;
-// export const {} = pizzaSlice.actions;
+export const {getDish} = pizzaSlice.actions;

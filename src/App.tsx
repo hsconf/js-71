@@ -1,19 +1,19 @@
-import Layout from "./Layout/Layout";
+import Layout from "./containers/Layout/Layout";
 import {Route, Routes} from "react-router-dom";
-import Admin from "./Admin/Admin";
-import Dishes from "./Dishes/Dishes";
-import AddDish from "./Dishes/AddDish/AddDish";
+import Dishes from "./containers/Dishes/Dishes";
+import AddDish from "./containers/Dishes/AddDish/AddDish";
+import MainMenu from "./containers/MainMenu/MainMenu";
 
 const App = () => {
     return (
         <>
             <Layout>
                 <Routes>
-                    <Route path="admin" element={<Admin />} />
+                    <Route path="/" element={<MainMenu />} />
+                    <Route path="admin" element={<Dishes />} />
                     <Route path="admin/dishes" element={<Dishes />} />
                     <Route path="admin/dishes/new-dish" element={<AddDish />} />
                     <Route path="admin/dishes/:id/edit" element={<AddDish />} />
-                    <Route path="admin/orders" element={<Admin />} />
                 </Routes>
             </Layout>
         </>

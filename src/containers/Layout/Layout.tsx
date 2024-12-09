@@ -13,11 +13,11 @@ const Layout: React.FC<Props> = ({children}) => {
             <header>
                 <nav className="navbar bg-body-tertiary border-bottom border-2 mb-5">
                     <div className="container-fluid">
-                        <a className="navbar-brand fs-4" href="#">
+                        <NavLink className="navbar-brand fs-4" to="/">
                             <img src="https://i.pinimg.com/736x/c5/19/d4/c519d4838c10d0c8ebfa7721f41705e3.jpg" alt="Logo" width="30" height="24"
                                  className="d-inline-block align-text-top ms-1"/>
                             Pizza
-                        </a>
+                        </NavLink>
 
                         {
                             location.pathname.startsWith('/admin') ? (
